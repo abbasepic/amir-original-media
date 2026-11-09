@@ -1,7 +1,7 @@
 // mode: ask | preview | publish | whoami
 const fs=require('fs'),path=require('path');
-const T=process.env.RUBIKA_TOKEN;if(!T)throw new Error('RUBIKA_TOKEN missing');
-const clean=s=>String(s).split(T).join('***');
+const T=process.env.RUBIKA_TOKEN||'';if(!T&&process.argv[2]!=='render')throw new Error('RUBIKA_TOKEN missing');
+const clean=s=>T?String(s).split(T).join('***'):String(s);
 const api=async(m,b)=>{const r=await fetch(`https://botapi.rubika.ir/v3/${T}/${m}`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b),signal:AbortSignal.timeout(30000)});const x=await r.text();console.log(m,r.status,clean(x).slice(0,400));return JSON.parse(x)};
 const read=f=>JSON.parse(fs.readFileSync(f,'utf8'));const write=(f,o)=>fs.writeFileSync(f,JSON.stringify(o,null,1));
 const cfg=read('config.json'),Q=read('queue.json'),S=read('state.json');
@@ -16,6 +16,7 @@ async function render(p,name,out){const {chromium}=require('playwright');const e
  fs.writeFileSync('template/posts.js','window.POSTS='+JSON.stringify([post]));
  const b=await chromium.launch();const pg=await b.newPage({viewport:{width:1080,height:1350}});await pg.goto('file://'+path.resolve('template/post.html'));await pg.evaluate(()=>document.fonts.ready);await pg.evaluate(()=>show(0));await pg.waitForFunction(()=>[...document.images].every(x=>x.complete));await pg.waitForTimeout(200);await pg.screenshot({path:out,type:'jpeg',quality:93});await b.close()}
 (async()=>{const mode=process.argv[2];console.log('mode',mode,'date',today,'index',S.index);
+ if(mode==='render'){const p=Q.find(q=>q.id===process.argv[3]);await render(p,process.argv[4],process.argv[5]);return}
  if(mode==='whoami'){const us=await updates();for(const u of us)console.log('UPD',u.type,u.chat_id,clean(JSON.stringify(u.new_message||u.event_data||{})).slice(0,200));write('state.json',S);return}
  const it=Q[S.index];
  if(!it){await say(cfg.owner_chat_id,'صف پست‌ها تمام شد؛ عکس قطعه‌های جدید لازم است.');return}

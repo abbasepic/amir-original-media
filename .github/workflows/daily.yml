@@ -29,9 +29,10 @@ jobs:
             T=$(date -u -d "$W" +%s); N=$(date -u +%s); [ $T -gt $N ] && sleep $((T-N))
           fi
           echo "MODE=$M" >> $GITHUB_ENV
-      - run: node pipeline.js "$MODE"
+      - run: node pipeline.js "$MODE" 2>&1 | tee last-run.log; test ${PIPESTATUS[0]} -eq 0
+        shell: bash
         env: { RUBIKA_TOKEN: "${{ secrets.RUBIKA_TOKEN }}" }
       - if: always()
         run: |
           git config user.name remota-bot; git config user.email bot@users.noreply.github.com
-          git add state.json; git diff --cached --quiet || (git commit -m "state $(date -u +%F-%H%M)" && git push)
+          git add state.json last-run.log; git diff --cached --quiet || (git commit -m "state $(date -u +%F-%H%M)" && git push)
