@@ -15,4 +15,5 @@ const api=async(m,b)=>{const r=await fetch(`https://botapi.rubika.ir/v3/${T}/${m
  const fid=JSON.parse(ut).data.file_id;
  const s=await api('sendFile',{chat_id:q.chat_id,file_id:fid,text:fs.readFileSync(q.caption,'utf8').trim()});
  if(s.status!=='OK')throw new Error('send failed');console.log('RUBIKA SENT');
+ if(q.delete_message_id){await api('deleteMessage',{chat_id:q.chat_id,message_id:q.delete_message_id})}
 })().catch(e=>{console.error('RUBIKA-ERR',clean(e.message));process.exit(1)});
