@@ -1,0 +1,37 @@
+name: daily-post
+on:
+  schedule:
+    - cron: '15 8 * * *'   # ask (12:00 Tehran is 08:30 UTC)
+    - cron: '10 13 * * *'  # preview (17:00 Tehran)
+    - cron: '5 14 * * *'   # publish (18:00 Tehran)
+  push:
+    paths: ['.run']
+permissions:
+  contents: write
+concurrency: daily-post
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm i --no-save playwright@1.48.2 sharp@0.34.5 && npx playwright install --with-deps chromium
+      - name: choose mode and wait
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then M=$(cat .run); else
+            case "${{ github.event.schedule }}" in
+              "15 8 * * *") M=ask; W=08:30;;
+              "10 13 * * *") M=preview; W=13:30;;
+              "5 14 * * *") M=publish; W=14:30;;
+            esac
+            T=$(date -u -d "$W" +%s); N=$(date -u +%s); [ $T -gt $N ] && sleep $((T-N))
+          fi
+          echo "MODE=$M" >> $GITHUB_ENV
+      - run: node pipeline.js "$MODE"
+        env: { RUBIKA_TOKEN: "${{ secrets.RUBIKA_TOKEN }}" }
+      - if: always()
+        run: |
+          git config user.name remota-bot; git config user.email bot@users.noreply.github.com
+          git add state.json; git diff --cached --quiet || (git commit -m "state $(date -u +%F-%H%M)" && git push)
