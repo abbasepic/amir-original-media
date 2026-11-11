@@ -27,7 +27,7 @@ async function render(p,name,out){const {chromium}=require('playwright');const e
  const post={id:'x',img:'../'+p.img,box:p.box?'carton.png':undefined,card:p.card,h:p.h,s:`${p.brand} با <em>دو سال ضمانت</em>`,c:p.c,name:esc(name)};
  fs.writeFileSync('template/posts.js','window.POSTS='+JSON.stringify([post]));
  const b=await chromium.launch();const pg=await b.newPage({viewport:{width:1080,height:1350}});await pg.goto('file://'+path.resolve('template/post.html'));await pg.evaluate(()=>document.fonts.ready);await pg.evaluate(()=>show(0));await pg.waitForFunction(()=>[...document.images].every(x=>x.complete));await pg.waitForTimeout(200);await pg.screenshot({path:out,type:'jpeg',quality:93});await b.close()}
-async function nowMode(first){const it=Q[S.index];const end=Date.now()+320*60e3;let msgs=first;
+async function nowMode(first){try{const me=await tg('getMe',{});console.log('BOT @'+me.username)}catch(e){}const it=Q[S.index];const end=Date.now()+320*60e3;let msgs=first;
  const save=()=>write('state.json',S);
  if(S.today&&S.today.date===today&&S.today.published){console.log('already published today');return}
  while(Date.now()<end){
@@ -41,7 +41,7 @@ async function nowMode(first){const it=Q[S.index];const end=Date.now()+320*60e3;
     await render(it,S.today.name,'today.jpg');await rubikaPost(cfg.group_chat_id,'today.jpg',caption(it,S.today.name));
     S.today.published=true;S.index++;save();await tgText(S.amir_tg,'ممنون 🌹 پست ثبت شد.');
     if(S.owner_tg)await tgPhoto(S.owner_tg,'today.jpg','✅ پست امروز در گروه روبیکا منتشر شد — '+S.today.name);return}}
-  await new Promise(r=>setTimeout(r,20000));msgs=await tgUpdates();save()}
+  await new Promise(r=>setTimeout(r,20000));try{msgs=await tgUpdates()}catch(e){console.log('poll error',clean(e.message));msgs=[]}save()}
  if(!(S.today&&S.today.date===today)){S.today={date:today,item:it.id}}S.today.skip=true;save();await owner('امروز آقای شوندی تا پایان زمان انتظار جواب نداد؛ پستی منتشر نشد.')}
 // ---------- main ----------
 (async()=>{const mode=process.argv[2];console.log('mode',mode,'date',today,'index',S.index);
