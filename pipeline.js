@@ -27,7 +27,7 @@ async function render(p,name,out){const {chromium}=require('playwright');const e
  const post={id:'x',img:'../'+p.img,box:p.box?'carton.png':undefined,card:p.card,h:p.h,s:`${p.brand} با <em>دو سال ضمانت</em>`,c:p.c,name:esc(name)};
  fs.writeFileSync('template/posts.js','window.POSTS='+JSON.stringify([post]));
  const b=await chromium.launch();const pg=await b.newPage({viewport:{width:1080,height:1350}});await pg.goto('file://'+path.resolve('template/post.html'));await pg.evaluate(()=>document.fonts.ready);await pg.evaluate(()=>show(0));await pg.waitForFunction(()=>[...document.images].every(x=>x.complete));await pg.waitForTimeout(200);await pg.screenshot({path:out,type:'jpeg',quality:93});await b.close()}
-async function nowMode(first){try{const me=await tg('getMe',{});console.log('BOT @'+me.username)}catch(e){}const it=Q[S.index];const end=Date.now()+320*60e3;let msgs=first;
+async function nowMode(first,full){try{const me=await tg('getMe',{});console.log('BOT @'+me.username)}catch(e){}const it=Q[S.index];const end=Date.now()+320*60e3;let msgs=first;
  const save=()=>write('state.json',S);
  if(S.today&&S.today.date===today&&S.today.published){console.log('already published today');return}
  while(Date.now()<end){
@@ -38,8 +38,12 @@ async function nowMode(first){try{const me=await tg('getMe',{});console.log('BOT
   else if(S.amir_tg){const n=msgs.filter(m=>m.chat===S.amir_tg).map(m=>m.text).filter(nameOk);
    if(n.length){S.today.name=n[n.length-1];save();
     if(!RT)throw new Error('RUBIKA_TOKEN missing');
-    await render(it,S.today.name,'today.jpg');await rubikaPost(cfg.group_chat_id,'today.jpg',caption(it,S.today.name));
-    S.today.published=true;S.index++;save();await tgText(S.amir_tg,'ممنون 🌹 پست ثبت شد.');
+    await render(it,S.today.name,'today.jpg');
+    if(full){await tgText(S.amir_tg,'ممنون 🌹');await tgPhoto(S.owner_tg,'today.jpg','پیش‌نمایش — نام قطعه: '+S.today.name);await owner('کپشن:\n\n'+caption(it,S.today.name)+'\n\n———\n۱۰ دقیقه‌ی دیگر منتشر می‌شود. اگر نمی‌خواهی، بنویس: توقف');
+     const stopAt=Date.now()+10*60e3;let stop=false;while(Date.now()<stopAt&&!stop){await new Promise(r=>setTimeout(r,15000));let m=[];try{m=await tgUpdates()}catch(e){}save();stop=m.some(x=>x.chat===S.owner_tg&&/توقف/.test(x.text))}
+     if(stop){S.today.skip=true;save();await owner('متوقف شد؛ پست منتشر نشد.');return}}
+    await rubikaPost(cfg.group_chat_id,'today.jpg',caption(it,S.today.name));
+    S.today.published=true;S.index++;save();if(!full)await tgText(S.amir_tg,'ممنون 🌹 پست ثبت شد.');
     if(S.owner_tg)await tgPhoto(S.owner_tg,'today.jpg','✅ پست امروز در گروه روبیکا منتشر شد — '+S.today.name);return}}
   await new Promise(r=>setTimeout(r,20000));try{msgs=await tgUpdates()}catch(e){console.log('poll error',clean(e.message));msgs=[]}save()}
  if(!(S.today&&S.today.date===today)){S.today={date:today,item:it.id}}S.today.skip=true;save();await owner('امروز آقای شوندی تا پایان زمان انتظار جواب نداد؛ پستی منتشر نشد.')}
@@ -50,6 +54,7 @@ async function nowMode(first){try{const me=await tg('getMe',{});console.log('BOT
  const msgs=await tgUpdates();write('state.json',S);
  if(mode==='register'){console.log('amir',!!S.amir_tg,'owner',!!S.owner_tg);return}
  if(mode==='now')return nowMode(msgs);
+ if(mode==='nowfull'){S.today=null;return nowMode(msgs,true)}
  const it=Q[S.index];
  if(!it){await owner('صف پست‌ها تمام شد؛ عکس قطعه‌های جدید لازم است.');return}
  if(mode==='ask'){if(S.today&&S.today.date===today){console.log('already asked');return}
