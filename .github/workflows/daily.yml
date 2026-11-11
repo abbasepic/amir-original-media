@@ -20,7 +20,7 @@ jobs:
       - run: npm i --no-save playwright@1.48.2 sharp@0.34.5 && npx playwright install --with-deps chromium
       - name: choose mode and wait
         run: |
-          if [ "${{ github.event_name }}" = "push" ]; then M=$(cat .run); else
+          if [ "${{ github.event_name }}" = "push" ]; then M=$(tr -d " \n" < .run); else
             case "${{ github.event.schedule }}" in
               "15 8 * * *") M=ask; W=08:30;;
               "10 13 * * *") M=preview; W=13:30;;
