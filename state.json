@@ -1,5 +1,13 @@
 {
- "index": 0,
+ "index": 1,
  "offset": null,
- "today": null
+ "today": {
+  "date": "2026-11-11",
+  "item": "01",
+  "asked": true,
+  "name": "بلبرینگ چرخ جلو پژو ۴۰۵",
+  "published": true
+ },
+ "tg_offset": 214425431,
+ "amir_tg": 6138743231
 }

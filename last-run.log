@@ -1,3 +1,29 @@
-mode now  date 2026-11-11 index 0
+mode now date 2026-11-11 index 0
 TG getUpdates 200 {"ok":true,"result":[]}
-NO TG CHAT: امروز نام قطعه پرسیده نشده بود؛ پست منتشر نمی‌شود.
+TG getMe 200 {"ok":true,"result":{"id":9133007656,"is_bot":true,"first_name":"اورجینال یدکی","username":"origimallyadakibot","can_join_groups":true,"can_read_all_group_messages":false,"supports_inline_queries":false,"supports_guest_queries":false,"can_connect_to_business":false,"has_main_web_app":false,"has_topi
+BOT @origimallyadakibot
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[{"update_id":214425429,"message":{"message_id":3,"from":{"id":6138743231,"is_bot":false,"first_name":"..","username":"amirshavandii1","language_code":"en"},"chat":{"id":6138743231,"first_name":"..","username":"amirshavandii1","type":"private"},"date":1794404276,"text":"Start"}}]
+TG getUpdates 200 {"ok":true,"result":[]}
+amir registered by username
+TG sendPhoto 200 {"ok":true,"result":{"message_id":4,"from":{"id":9133007656,"is_bot":true,"first_name":"اورجینال یدکی","username":"origimallyadakibot"},"chat":{"id":6138743231,"first_name":"..","username":"amirshavandii1","type":"private"},"date":1794404277,"photo":[{"file_id":"AgACAgQAAxkDAAMEavRvtT2c4AJgB5--SBZe3
+NO TG CHAT: آقای شوندی ربات را استارت کرد و نام قطعه از او پرسیده شد.
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[{"update_id":214425430,"message":{"message_id":5,"from":{"id":6138743231,"is_bot":false,"first_name":"..","username":"amirshavandii1","language_code":"en"},"chat":{"id":6138743231,"first_name":"..","username":"amirshavandii1","type":"private"},"date":1794404305,"text":"بلبرینگ چ
+TG getUpdates 200 {"ok":true,"result":[]}
+RB requestSendFile 200 {"status":"OK","data":{"upload_url":"https://messengerg2f1.rubika.ir/upload/BQpi0pwuqwkjkvkvoawerqeoohygiokfwokqx"}}
+RB sendFile 200 {"status":"OK","data":{"message_id":"1968589005030605872"}}
+TG sendMessage 200 {"ok":true,"result":{"message_id":6,"from":{"id":9133007656,"is_bot":true,"first_name":"اورجینال یدکی","username":"origimallyadakibot"},"chat":{"id":6138743231,"first_name":"..","username":"amirshavandii1","type":"private"},"date":1794404324,"text":"ممنون 🌹 پست ثبت شد."}}
