@@ -1,12 +1,13 @@
 mode now date 2026-11-11 index 0
-ERR Error: TELEGRAM_TOKEN missing
-    at /home/runner/work/amir-original-media/amir-original-media/pipeline.js:49:15
-    at Object.<anonymous> (/home/runner/work/amir-original-media/amir-original-media/pipeline.js:73:3)
-    at Module._compile (node:internal/modules/cjs/loader:1781:14)
-    at Object..js (node:internal/modules/cjs/loader:1913:10)
-    at Module.load (node:internal/modules/cjs/loader:1505:32)
-    at Function._load (node:internal/modules/cjs/loader:1309:12)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
-    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
-    at node:internal/main/run_main_module:36:49
-NO TG CHAT: خطا در کار پست روزانه: TELEGRAM_TOKEN missing
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+TG getUpdates 200 {"ok":true,"result":[]}
+ERR TypeError: fetch failed
+    at node:internal/deps/undici/undici:15456:13
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async tg (/home/runner/work/amir-original-media/amir-original-media/pipeline.js:10:39)
+    at async tgUpdates (/home/runner/work/amir-original-media/amir-original-media/pipeline.js:13:155)
+    at async nowMode (/home/runner/work/amir-original-media/amir-original-media/pipeline.js:44:50)
+NO TG CHAT: خطا در کار پست روزانه: fetch failed
