@@ -1,3 +1,4 @@
-mode ask date 2026-11-12 index 1
+mode preview date 2026-11-13 index 1
+TG getUpdates 200 {"ok":true,"result":[{"update_id":214425433,"message":{"message_id":14,"from":{"id":1299733783,"is_bot":false,"first_name":"Abbas","last_name":"Ansari","username":"abbasmitic","language_code":"en"},"chat":{"id":1299733783,"first_name":"Abbas","last_name":"Ansari","username":"abbasmitic","type":"priv
 TG getUpdates 200 {"ok":true,"result":[]}
-TG sendPhoto 200 {"ok":true,"result":{"message_id":15,"from":{"id":9133007656,"is_bot":true,"first_name":"اورجینال یدکی","username":"origimallyadakibot"},"chat":{"id":6138743231,"first_name":"..","username":"amirshavandii1","type":"private"},"date":1794502092,"photo":[{"file_id":"AgACAgQAAxkDAAMPavXtzAxndp6GlVoHAAG2
+TG sendMessage 200 {"ok":true,"result":{"message_id":17,"from":{"id":9133007656,"is_bot":true,"first_name":"اورجینال یدکی","username":"origimallyadakibot"},"chat":{"id":1299733783,"first_name":"Abbas","last_name":"Ansari","username":"abbasmitic","type":"private"},"date":1794516430,"text":"امروز نام قطعه پرسیده نشده بو
