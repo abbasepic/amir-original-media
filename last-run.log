@@ -1,3 +1,3 @@
-mode publish date 2026-11-12 index 1
+mode ask date 2026-11-12 index 1
 TG getUpdates 200 {"ok":true,"result":[]}
-TG sendMessage 200 {"ok":true,"result":{"message_id":13,"from":{"id":9133007656,"is_bot":true,"first_name":"اورجینال یدکی","username":"origimallyadakibot"},"chat":{"id":1299733783,"first_name":"Abbas","last_name":"Ansari","username":"abbasmitic","type":"private"},"date":1794431702,"text":"امروز نام قطعه پرسیده نشده بو
+TG sendPhoto 200 {"ok":true,"result":{"message_id":15,"from":{"id":9133007656,"is_bot":true,"first_name":"اورجینال یدکی","username":"origimallyadakibot"},"chat":{"id":6138743231,"first_name":"..","username":"amirshavandii1","type":"private"},"date":1794502092,"photo":[{"file_id":"AgACAgQAAxkDAAMPavXtzAxndp6GlVoHAAG2
