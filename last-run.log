@@ -1,3 +1,4 @@
-mode ping tehran 2026-11-13T15:17 index 1 force false
+mode ask tehran 2026-11-13T15:18 index 1 force false
 TG getUpdates 200 {"ok":true,"result":[]}
-TG sendMessage 200 {"ok":true,"result":{"message_id":22,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
+TG sendPhoto 200 {"ok":true,"result":{"message_id":23,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
+TG sendMessage 200 {"ok":true,"result":{"message_id":24,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
