@@ -270,6 +270,7 @@ async function now() {
   if (mode === 'preview') return preview();
   if (mode === 'publish') return publish();
   if (mode === 'rbinfo') { const g = await rb('getChat', { chat_id: cfg.group_chat_id }); console.log('GROUP', JSON.stringify(g)); const u = await rb('getUpdates', { limit: 100 }); const chats = {}; for (const x of (u.data && u.data.updates) || []) chats[x.chat_id] = x.type; console.log('CHATS', JSON.stringify(chats)); for (const id of Object.keys(chats)) { try { const c = await rb('getChat', { chat_id: id }); console.log('CHAT', id, JSON.stringify(c)) } catch (e) { } } return }
+  if (mode === 'rbfwd') { const r = await rb('forwardMessage', { from_chat_id: cfg.group_chat_id, message_id: process.argv[3], to_chat_id: S.rb_test_chat }); console.log('FWD', JSON.stringify(r)); return }
   if (mode === 'now') return now();
   if (mode === 'test') return test(+process.argv[3] || 1);
   throw new Error('unknown mode ' + mode);
