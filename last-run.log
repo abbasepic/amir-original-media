@@ -1,4 +1,11 @@
-mode ask tehran 2026-11-13T15:18 index 1 force false
+mode test tehran 2026-11-13T16:20 index 2 force false
 TG getUpdates 200 {"ok":true,"result":[]}
-TG sendPhoto 200 {"ok":true,"result":{"message_id":23,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
-TG sendMessage 200 {"ok":true,"result":{"message_id":24,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
+TG sendPhoto 200 {"ok":true,"result":{"message_id":39,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
+TG sendPhoto 200 {"ok":true,"result":{"message_id":40,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
+RB requestSendFile 200 {"status":"OK","data":{"upload_url":"https://messengerg2f1.rubika.ir/upload/BQpi0gsbapksdlwanunvdcemrnnadmebdxcly"}}
+RB sendFile 200 {"status":"OK","data":{"message_id":"1970633064009304959"}}
+TG sendMessage 200 {"ok":true,"result":{"message_id":41,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
+✅ تلگرام: ارسال عکس و سؤال نام
+✅ تشخیص نام از جواب‌ها — تست 4 چرخ DEROLEH
+✅ ساخت عکس پست و پیش‌نمایش در تلگرام
+✅ روبیکا: ارسال پست (چت خصوصی تست) — message 1970633064009304959
