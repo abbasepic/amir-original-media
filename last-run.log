@@ -1,8 +1,6 @@
-mode rbinfo tehran 2026-11-13T16:25 index 2 force false
+mode rbfwd tehran 2026-11-13T16:30 index 2 force false
 TG getUpdates 200 {"ok":true,"result":[]}
-RB getChat 200 {"status":"OK","data":{"chat":{"chat_id":"g0CivoN01839c6812ab61f2e22d433d4","chat_type":"Group","title":"اورجینال یدکی 👑@originallyadaki"}}}
-GROUP {"status":"OK","data":{"chat":{"chat_id":"g0CivoN01839c6812ab61f2e22d433d4","chat_type":"Group","title":"اورجینال یدکی 👑@originallyadaki"}}}
-RB getUpdates 200 {"status":"OK","data":{"updates":[{"type":"StartedBot","chat_id":"b0KdQVB0BQpi021f7898f5e4250c2648","update_time":1794572299},{"type":"NewMessage","chat_id":"b0KdQVB0BQpi021f7898f5e4250c2648","new_mes
-CHATS {"b0KdQVB0BQpi021f7898f5e4250c2648":"NewMessage"}
-RB getChat 200 {"status":"OK","data":{"chat":{"chat_id":"b0KdQVB0BQpi021f7898f5e4250c2648","chat_type":"User","user_id":"u0KdQVB0e8dc6b9cc40ddd288817a35a","first_name":"عباس","last_name":"انصاری"}}}
-CHAT b0KdQVB0BQpi021f7898f5e4250c2648 {"status":"OK","data":{"chat":{"chat_id":"b0KdQVB0BQpi021f7898f5e4250c2648","chat_type":"User","user_id":"u0KdQVB0e8dc6b9cc40ddd288817a35a","first_name":"عباس","last_name":"انصاری"}}}
+ERR Error: unknown mode rbfwd
+    at /home/runner/work/amir-original-media/amir-original-media/pipeline.js:275:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+TG sendMessage 200 {"ok":true,"result":{"message_id":42,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
