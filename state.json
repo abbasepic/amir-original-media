@@ -1,6 +1,6 @@
 {
  "index": 1,
- "tg_offset": 214425435,
+ "tg_offset": 214425437,
  "amir_tg": 6138743231,
  "owner_tg": 1299733783,
  "cycle": {
@@ -9,7 +9,13 @@
   "asked_t": 1794586133,
   "urgent": true
  },
- "inbox": [],
+ "inbox": [
+  {
+   "who": "owner",
+   "text": "وضعیت",
+   "t": 1794586489
+  }
+ ],
  "rb_test_chat": "b0KdQVB0BQpi021f7898f5e4250c2648",
  "urgentReq": false
 }
