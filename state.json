@@ -1,6 +1,6 @@
 {
- "index": 1,
- "tg_offset": 214425438,
+ "index": 2,
+ "tg_offset": 214425439,
  "amir_tg": 6138743231,
  "owner_tg": 1299733783,
  "cycle": {
@@ -9,7 +9,11 @@
   "asked_t": 1794586133,
   "urgent": true,
   "skip": false,
-  "stop": false
+  "stop": false,
+  "name": "کیت تسمه تایم TU5",
+  "published": true,
+  "previewed": true,
+  "rubika_id": "1970974153520605872"
  },
  "inbox": [
   {
@@ -21,6 +25,11 @@
    "who": "owner",
    "text": "الان",
    "t": 1794586661
+  },
+  {
+   "who": "amir",
+   "text": "کیت تسمه تایم TU5",
+   "t": 1794595716
   }
  ],
  "rb_test_chat": "b0KdQVB0BQpi021f7898f5e4250c2648",
