@@ -4,6 +4,8 @@ name: bot
 # starts the next run; the cron line and the scheduled tasks are only a watchdog.
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '7 */2 * * *'
 permissions:
   contents: write
   actions: write
