@@ -1,11 +1,8 @@
-mode test tehran 2026-11-13T16:20 index 2 force false
+mode rbinfo tehran 2026-11-13T16:25 index 2 force false
 TG getUpdates 200 {"ok":true,"result":[]}
-TG sendPhoto 200 {"ok":true,"result":{"message_id":39,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
-TG sendPhoto 200 {"ok":true,"result":{"message_id":40,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
-RB requestSendFile 200 {"status":"OK","data":{"upload_url":"https://messengerg2f1.rubika.ir/upload/BQpi0gsbapksdlwanunvdcemrnnadmebdxcly"}}
-RB sendFile 200 {"status":"OK","data":{"message_id":"1970633064009304959"}}
-TG sendMessage 200 {"ok":true,"result":{"message_id":41,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
-✅ تلگرام: ارسال عکس و سؤال نام
-✅ تشخیص نام از جواب‌ها — تست 4 چرخ DEROLEH
-✅ ساخت عکس پست و پیش‌نمایش در تلگرام
-✅ روبیکا: ارسال پست (چت خصوصی تست) — message 1970633064009304959
+RB getChat 200 {"status":"OK","data":{"chat":{"chat_id":"g0CivoN01839c6812ab61f2e22d433d4","chat_type":"Group","title":"اورجینال یدکی 👑@originallyadaki"}}}
+GROUP {"status":"OK","data":{"chat":{"chat_id":"g0CivoN01839c6812ab61f2e22d433d4","chat_type":"Group","title":"اورجینال یدکی 👑@originallyadaki"}}}
+RB getUpdates 200 {"status":"OK","data":{"updates":[{"type":"StartedBot","chat_id":"b0KdQVB0BQpi021f7898f5e4250c2648","update_time":1794572299},{"type":"NewMessage","chat_id":"b0KdQVB0BQpi021f7898f5e4250c2648","new_mes
+CHATS {"b0KdQVB0BQpi021f7898f5e4250c2648":"NewMessage"}
+RB getChat 200 {"status":"OK","data":{"chat":{"chat_id":"b0KdQVB0BQpi021f7898f5e4250c2648","chat_type":"User","user_id":"u0KdQVB0e8dc6b9cc40ddd288817a35a","first_name":"عباس","last_name":"انصاری"}}}
+CHAT b0KdQVB0BQpi021f7898f5e4250c2648 {"status":"OK","data":{"chat":{"chat_id":"b0KdQVB0BQpi021f7898f5e4250c2648","chat_type":"User","user_id":"u0KdQVB0e8dc6b9cc40ddd288817a35a","first_name":"عباس","last_name":"انصاری"}}}
