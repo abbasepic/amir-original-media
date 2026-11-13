@@ -168,7 +168,7 @@ async function askPhoto(p) {
 async function render(p, name, out) {
   if (process.env.FAKE_RENDER) { fs.copyFileSync(process.env.FAKE_RENDER, out); return }
   const { chromium } = require('playwright'); const esc = s => s.replace(/[<>&]/g, '');
-  const post = { id: 'x', img: '../' + p.img, box: p.box ? 'carton.png' : undefined, card: p.card, h: p.h, s: `${p.brand} با <em>${p.ws || 'دو سال ضمانت'}</em>`, c: p.c, name: esc(name) };
+  const post = { id: 'x', img: '../' + p.img, box: p.box ? 'carton.png' : undefined, card: p.card, solo: p.solo, h: p.h, s: `${p.brand} با <em>${p.ws || 'دو سال ضمانت'}</em>`, c: p.c, name: esc(name) };
   fs.writeFileSync('template/posts.js', 'window.POSTS=' + JSON.stringify([post]));
   const b = await chromium.launch(); const pg = await b.newPage({ viewport: { width: 1080, height: 1350 } });
   await pg.goto('file://' + path.resolve('template/post.html')); await pg.evaluate(() => document.fonts.ready); await pg.evaluate(() => show(0));
