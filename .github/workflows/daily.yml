@@ -46,6 +46,7 @@ jobs:
       - if: always()
         run: |
           git config user.name remota-bot; git config user.email bot@users.noreply.github.com
+          git checkout -- template/posts.js 2>/dev/null || true
           git add state.json last-run.log; git diff --cached --quiet && exit 0
           git commit -m "state $(date -u +%F-%H%M) $MODE"
-          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done
+          for i in 1 2 3; do git pull --rebase --autostash -q && git push -q && break; sleep 5; done
