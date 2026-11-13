@@ -1,4 +1,2 @@
-mode rbfwd tehran 2026-11-13T16:40 index 2 force false
-TG getUpdates 200 {"ok":true,"result":[]}
-RB forwardMessage 200 {"status":"INVALID_ACCESS"}
-FWD {"status":"INVALID_ACCESS"}
+mode preview tehran 2026-11-13T18:22 index 2 force false
+outside window, skip preview 9.87
