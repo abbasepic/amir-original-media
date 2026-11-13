@@ -1,5 +1,5 @@
 name: daily-post
-# The exact clock is a scheduled task that dispatches this workflow at 12:00 / 17:00 / 18:00 Tehran.
+# The exact clock is a scheduled task that dispatches this workflow at 03:30 / 08:30 / 09:30 New York time.
 # The cron lines are only a fallback; GitHub often runs them hours late, so pipeline.js ignores
 # any run outside its time window.
 on:

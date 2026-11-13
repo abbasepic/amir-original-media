@@ -1,4 +1,4 @@
-// Daily flow (Tehran time): ask 12:00 -> preview 17:00 -> publish 18:00.
+// Daily flow (New York time): ask 03:30 -> preview 08:30 -> publish 09:30 (= 12/17/18 Tehran in winter).
 // Telegram: the name question to Shavandi, previews/reports/commands for the owner.
 // Rubika: the post in the group.
 // modes: ask | preview | publish | register | ping | test <n> | render <id> <name> <out>
@@ -19,8 +19,20 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const nowMs = () => process.env.NOW ? Date.parse(process.env.NOW) : Date.now();
 const teh = () => new Date(nowMs() + 3.5 * 3600e3);
 const today = () => teh().toISOString().slice(0, 10);
-const hour = () => { const d = teh(); return d.getUTCHours() + d.getUTCMinutes() / 60 };
-const WINDOW = { ask: [11.5, 16], preview: [16.5, 18], publish: [17.75, 21.5] };
+// The schedule follows New York time: ask 03:30, preview 08:30, publish 09:30 (America/New_York).
+// In winter that is 12:00 / 17:00 / 18:00 Tehran; in US summer time one hour earlier.
+const SCHED = { ask: [3, 30], preview: [8, 30], publish: [9, 30] };
+const nyParts = ms => Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).formatToParts(new Date(ms)).map(x => [x.type, x.value]));
+const hour = () => { const p = nyParts(nowMs()); return +p.hour + +p.minute / 60 };
+function nyAt(h, m) { // instant of today's h:m New York time
+  const p = nyParts(nowMs()), guess = Date.UTC(+p.year, +p.month - 1, +p.day, h, m);
+  const q = nyParts(guess), off = Date.UTC(+q.year, +q.month - 1, +q.day, +q.hour, +q.minute) - guess;
+  return guess - off;
+}
+const fa = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const tehClock = ms => { const d = new Date(ms + 3.5 * 3600e3); return fa(String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0')) };
+const T = k => tehClock(nyAt(...SCHED[k]));
+const WINDOW = { ask: [3, 7.5], preview: [8, 9.5], publish: [9.25, 13] };
 
 // ---------- network with retries ----------
 async function call(label, url, opts, tries = 4) {
@@ -64,7 +76,7 @@ async function pull() {
     for (const x of u) {
       S.tg_offset = x.update_id + 1; const m = x.message; if (!m || !m.text) continue;
       const user = (m.from && m.from.username || '').toLowerCase(), chat = m.chat.id, text = m.text.trim();
-      if (user === amirUser && !S.amir_tg) { S.amir_tg = chat; await tgText(chat, 'ثبت شد ✅ از این به بعد هر روز ساعت ۱۲ نام قطعه از شما پرسیده می‌شود.') }
+      if (user === amirUser && !S.amir_tg) { S.amir_tg = chat; await tgText(chat, `ثبت شد ✅ از این به بعد هر روز ساعت ${T('ask')} نام قطعه از شما پرسیده می‌شود.`) }
       if (text.startsWith('/start') && !S.owner_tg && chat !== S.amir_tg && user !== amirUser) { S.owner_tg = chat; await tgText(chat, 'ثبت شد ✅ شما مدیر هستید.') }
       const who = chat === S.amir_tg ? 'amir' : chat === S.owner_tg ? 'owner' : 'other';
       S.inbox.push({ who, text, t: m.date });
@@ -88,7 +100,7 @@ async function ownerCommand(text) {
 function status() {
   const c = S.cycle, it = Q[S.index];
   const lines = ['📋 وضعیت', 'قطعه‌ی بعدی صف: ' + (it ? it.id + ' (' + it.type + ' ' + it.brand + ')' : 'صف تمام شده'), 'تعداد باقی‌مانده: ' + Math.max(0, Q.length - S.index)];
-  if (c) lines.push('امروز (' + c.day + '): ' + (c.published ? 'منتشر شد ✅' : c.stop ? 'متوقف شد ✋' : c.skip ? 'منتشر نمی‌شود' : c.previewed ? 'پیش‌نمایش رفته، منتظر ساعت ۱۸' : 'منتظر نام از آقای شوندی') + (cycleName(c) ? ' — ' + cycleName(c) : ''));
+  if (c) lines.push('امروز (' + c.day + '): ' + (c.published ? 'منتشر شد ✅' : c.stop ? 'متوقف شد ✋' : c.skip ? 'منتشر نمی‌شود' : c.previewed ? 'پیش‌نمایش رفته، منتظر ساعت ' + T('publish') : 'منتظر نام از آقای شوندی') + (cycleName(c) ? ' — ' + cycleName(c) : ''));
   return lines.join('\n');
 }
 
@@ -130,7 +142,7 @@ async function rubikaTestChat() {
 }
 
 // ---------- content ----------
-const askCaption = 'سلام آقای شوندی 🌹\nنام دقیق این قطعه چیه؟ لطفاً فقط نام کامل رو بنویسید تا ساعت ۱۸ توی کانال روبیکا بره.';
+const askCaption = () => `سلام آقای شوندی 🌹\nنام دقیق این قطعه چیه؟ لطفاً فقط نام کامل رو بنویسید تا ساعت ${T('publish')} توی کانال روبیکا بره.`;
 const caption = (p, name) => `همکار عزیز، ${name} با دو سال ضمانت موجوده. قفسه‌ت رو پر کن. 👇\n\n${name} از برند ${p.brand}\n✅ موجود برای سفارش عمده\n✅ دو سال ضمانت\n✅ تأمین و ارسال سریع\n\nقطعه‌ای که ضمانتش معلومه، راحت‌تر فروش می‌ره و کمتر برگشت می‌خوره.\n\n📞 برای قیمت عمده و ثبت سفارش، همین الان تماس بگیر:\n09122525516\n\n📍 قم، خیابان کشاورز شمالی، نبش ۳۶\nفروش فقط به‌صورت عمده\n\n#پخش_عمده #لوازم_یدکی #قطعات_یدکی #${p.brand.replace(/[ .]/g, '_')} #قم`;
 async function askPhoto(p) {
   const sharp = require('sharp'); const pic = path.join(fs.mkdtempSync('/tmp/a'), 'q.jpg');
@@ -155,13 +167,13 @@ async function ask() {
   if (!it) { S.cycle = { day: today(), skip: true }; save(); return owner('⚠️ صف پست‌ها تمام شده؛ عکس قطعه‌های جدید لازم است.') }
   S.cycle = { day: today(), item: it.id, asked_t: Math.floor(nowMs() / 1000) - 60 };
   if (!S.amir_tg) { S.cycle.skip = true; save(); return owner('⚠️ آقای شوندی هنوز در ربات ثبت نشده؛ امروز پستی منتشر نمی‌شود.') }
-  await tgPhoto(S.amir_tg, await askPhoto(it), askCaption); save();
-  await owner(`📨 نام قطعه‌ی امروز از آقای شوندی پرسیده شد (${it.type}، ${it.brand}).\nساعت ۱۷ پیش‌نمایش برایت می‌آید.\nاگر خودت نام را می‌دانی بنویس: نام: ...`);
+  await tgPhoto(S.amir_tg, await askPhoto(it), askCaption()); save();
+  await owner(`📨 نام قطعه‌ی امروز از آقای شوندی پرسیده شد (${it.type}، ${it.brand}).\nساعت ${T('preview')} پیش‌نمایش برایت می‌آید.\nاگر خودت نام را می‌دانی بنویس: نام: ...`);
 }
 async function sendPreview(c, note) {
   const it = itemOf(c), name = cycleName(c);
   await render(it, name, 'today.jpg');
-  await tgPhoto(S.owner_tg, 'today.jpg', '👀 پیش‌نمایش پست ساعت ۱۸ — نام قطعه: ' + name);
+  await tgPhoto(S.owner_tg, 'today.jpg', `👀 پیش‌نمایش پست ساعت ${T('publish')} — نام قطعه: ` + name);
   await owner('کپشن:\n\n' + caption(it, name) + '\n\n———\n' + note);
   c.name = name; c.previewed = true; save();
 }
@@ -169,9 +181,9 @@ async function preview() {
   const c = S.cycle;
   if (!c || c.day !== today()) return owner('⚠️ امروز نام قطعه پرسیده نشده بود؛ پستی منتشر نمی‌شود.');
   if (c.skip || c.published || c.stop || c.previewed) return console.log('preview: nothing to do');
-  if (!cycleName(c)) { c.skip = true; save(); return owner('⚠️ آقای شوندی تا ساعت ۱۷ نام قطعه را نفرستاد؛ پست امروز منتشر نمی‌شود.\n(اگر تا ساعت ۱۸ نام برسد، یا خودت بنویسی «نام: ...»، ساعت ۱۸ اول پیش‌نمایش می‌آید و ۱۰ دقیقه بعد منتشر می‌شود.)') }
-  await sendPreview(c, 'اگر نمی‌خواهی منتشر شود، تا ساعت ۱۸ بنویس: توقف\nبرای عوض کردن نام بنویس: نام: ...');
-  if (S.amir_tg) await tgText(S.amir_tg, 'ممنون 🌹 ساعت ۱۸ توی کانال روبیکا منتشر می‌شه.');
+  if (!cycleName(c)) { c.skip = true; save(); return owner(`⚠️ آقای شوندی تا ساعت ${T('preview')} نام قطعه را نفرستاد؛ پست امروز منتشر نمی‌شود.\n(اگر تا ساعت ${T('publish')} نام برسد، یا خودت بنویسی «نام: ...»، ساعت ${T('publish')} اول پیش‌نمایش می‌آید و ۱۰ دقیقه بعد منتشر می‌شود.)`) }
+  await sendPreview(c, `اگر نمی‌خواهی منتشر شود، تا ساعت ${T('publish')} بنویس: توقف\nبرای عوض کردن نام بنویس: نام: ...`);
+  if (S.amir_tg) await tgText(S.amir_tg, `ممنون 🌹 ساعت ${T('publish')} توی کانال روبیکا منتشر می‌شه.`);
 }
 async function publish() {
   const c = S.cycle;
@@ -187,8 +199,8 @@ async function publish() {
     while (nowMs() < end && !S.cycle.stop) { await sleep(20000); try { await pull() } catch (e) { console.log('pull', clean(e.message)) } }
     if (S.cycle.stop) { c.stopReported = true; save(); return owner('✋ پست امروز منتشر نشد.') }
   }
-  const wait = Date.parse(today() + 'T18:00:00+03:30') - nowMs();
-  if (wait > 0 && wait < 20 * 60e3 && !process.env.NOW) { console.log('waiting until 18:00', Math.round(wait / 1000)); await sleep(wait); await pull() }
+  const wait = nyAt(...SCHED.publish) - nowMs();
+  if (wait > 0 && wait < 20 * 60e3 && !process.env.NOW) { console.log('waiting until publish time', Math.round(wait / 1000)); await sleep(wait); await pull() }
   if (S.cycle.stop) { c.stopReported = true; save(); return owner('✋ پست امروز منتشر نشد.') }
   const it = itemOf(c), name = cycleName(c);
   await render(it, name, 'today.jpg');
@@ -202,7 +214,7 @@ async function publish() {
 async function test(n) {
   const it = Q[(S.index + n) % Q.length], res = [];
   const step = async (label, fn) => { try { const v = await fn(); res.push('✅ ' + label + (v ? ' — ' + v : '')); return true } catch (e) { res.push('❌ ' + label + ' — ' + clean(e.message)); return false } };
-  await step('تلگرام: ارسال عکس و سؤال نام', async () => { await tgPhoto(S.owner_tg, await askPhoto(it), `🧪 تست ${n} — این پیام در روز واقعی برای آقای شوندی می‌رود:\n\n` + askCaption) });
+  await step('تلگرام: ارسال عکس و سؤال نام', async () => { await tgPhoto(S.owner_tg, await askPhoto(it), `🧪 تست ${n} — این پیام در روز واقعی برای آقای شوندی می‌رود:\n\n` + askCaption()) });
   const name = `تست ${n} ${it.type} ${it.brand}`;
   await step('تشخیص نام از جواب‌ها', async () => {
     const saved = S.inbox; S.inbox = [{ who: 'amir', text: 'سلام', t: 100 }, { who: 'amir', text: name, t: 101 }, { who: 'amir', text: 'ممنون', t: 102 }, { who: 'other', text: 'x y z w', t: 103 }];
