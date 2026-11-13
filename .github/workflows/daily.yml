@@ -20,7 +20,7 @@ concurrency: daily-post
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 200
     steps:
       - uses: actions/checkout@v4
       - name: choose mode
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - run: npm i --no-save sharp@0.34.5 playwright@1.48.2
-      - if: contains(fromJSON('["preview","publish","test"]'), env.MODE)
+      - if: contains(fromJSON('["preview","publish","test","now"]'), env.MODE)
         run: timeout 300 npx playwright install --with-deps chromium || npx playwright install chromium
       - run: node pipeline.js "$MODE" $ARG 2>&1 | tee last-run.log; test ${PIPESTATUS[0]} -eq 0
         shell: bash

@@ -230,6 +230,32 @@ async function test(n) {
   if (res.some(r => r.startsWith('❌'))) process.exitCode = 1;
 }
 
+// One-off: ask right now and post to the group as soon as the name arrives (waits up to 3 hours).
+async function now() {
+  let c = S.cycle;
+  if (c && c.day === today() && c.published) return owner('پست امروز قبلاً منتشر شده است.');
+  const it = c && c.day === today() && c.item ? itemOf(c) : Q[S.index];
+  if (!it) return owner('⚠️ صف پست‌ها تمام شده.');
+  if (!S.amir_tg) return owner('⚠️ آقای شوندی در ربات ثبت نشده.');
+  if (!c || c.day !== today() || !c.item) c = S.cycle = { day: today(), item: it.id, asked_t: Math.floor(nowMs() / 1000) - 60 };
+  c.stop = false; c.skip = false; save();
+  if (!cycleName(c)) {
+    await tgPhoto(S.amir_tg, await askPhoto(it), 'سلام آقای شوندی 🌹\nنام دقیق این قطعه چیه؟ همین که بنویسید، توی کانال روبیکا منتشر می‌شه.');
+    await owner(`📨 همین الان نام قطعه (${it.type}، ${it.brand}) از آقای شوندی پرسیده شد. به محض جواب، پست در روبیکا منتشر می‌شود و خبرت می‌کنم. (برای جلوگیری بنویس: توقف)`);
+  }
+  const end = Date.now() + 180 * 60e3;
+  while (!cycleName(c) && !S.cycle.stop && Date.now() < end) { await sleep(20000); try { await pull() } catch (e) { console.log('pull', clean(e.message)) } }
+  if (S.cycle.stop) return owner('✋ منتشر نشد.');
+  const name = cycleName(c);
+  if (!name) { c.skip = true; save(); return owner('⚠️ آقای شوندی تا ۳ ساعت جواب نداد؛ پستی منتشر نشد. (اگر نام را داری بنویس «نام: ...» و به من بگو)') }
+  c.name = name; c.previewed = true; save();
+  await render(it, name, 'today.jpg');
+  const id = await rubikaPost(cfg.group_chat_id, 'today.jpg', caption(it, name));
+  c.published = true; c.rubika_id = id; S.index++; save();
+  await tgPhoto(S.owner_tg, 'today.jpg', '✅ پست در گروه روبیکا منتشر شد — ' + name);
+  await tgText(S.amir_tg, '✅ پست «' + name + '» توی کانال روبیکا منتشر شد. ممنون 🌹');
+}
+
 // ---------- main ----------
 (async () => {
   const mode = process.argv[2];
@@ -243,6 +269,7 @@ async function test(n) {
   if (mode === 'ask') return ask();
   if (mode === 'preview') return preview();
   if (mode === 'publish') return publish();
+  if (mode === 'now') return now();
   if (mode === 'test') return test(+process.argv[3] || 1);
   throw new Error('unknown mode ' + mode);
 })().catch(async e => { console.error('ERR', clean(e.stack || e)); try { save(); await owner('❌ خطا در روند پست روزانه: ' + clean(e.message)) } catch (_) { } process.exit(1) });
