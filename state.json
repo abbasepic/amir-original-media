@@ -1,19 +1,26 @@
 {
  "index": 1,
- "tg_offset": 214425437,
+ "tg_offset": 214425438,
  "amir_tg": 6138743231,
  "owner_tg": 1299733783,
  "cycle": {
   "day": "2026-11-13",
   "item": "26",
   "asked_t": 1794586133,
-  "urgent": true
+  "urgent": true,
+  "skip": false,
+  "stop": false
  },
  "inbox": [
   {
    "who": "owner",
    "text": "وضعیت",
    "t": 1794586489
+  },
+  {
+   "who": "owner",
+   "text": "الان",
+   "t": 1794586661
   }
  ],
  "rb_test_chat": "b0KdQVB0BQpi021f7898f5e4250c2648",
