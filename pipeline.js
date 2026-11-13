@@ -276,6 +276,15 @@ async function now() {
     if (!nameOk(name)) throw new Error('repost needs a name');
     await render(it, name, 'today.jpg'); const id = await rubikaPost(cfg.group_chat_id, 'today.jpg', caption(it, name));
     c.name = name; c.rubika_id = id; save(); await tgPhoto(S.owner_tg, 'today.jpg', '🔁 پست دوباره در گروه روبیکا فرستاده شد — ' + name + '\nلطفاً در گروه چک کن.'); return }
+  if (mode === 'diag') { // Rubika group delivery diagnostics
+    const g = cfg.group_chat_id, old = process.argv[3];
+    if (old) console.log('DIAG delete-old', JSON.stringify(await rb('deleteMessage', { chat_id: g, message_id: old })));
+    const t = await rb('sendMessage', { chat_id: g, text: '🔧 تست اتصال ربات (متن)' }); console.log('DIAG text', JSON.stringify(t));
+    const it = itemOf(S.cycle) || Q[0]; const pic = await askPhoto(it);
+    const id = await rubikaPost(g, pic, '🔧 تست اتصال ربات (عکس)'); console.log('DIAG image', id);
+    S.diag = { text: t.data && t.data.message_id, image: id }; save();
+    await owner('🔧 دو پیام تستی به گروه روبیکا رفت: یک متن «🔧 تست اتصال ربات (متن)» و یک عکس «🔧 تست اتصال ربات (عکس)». کدام را در گروه می‌بینی؟'); return }
+  if (mode === 'diagclean') { for (const k of ['text', 'image']) if (S.diag && S.diag[k]) console.log('DIAG del', k, JSON.stringify(await rb('deleteMessage', { chat_id: cfg.group_chat_id, message_id: S.diag[k] }))); return }
   if (mode === 'now') return now();
   if (mode === 'test') return test(+process.argv[3] || 1);
   throw new Error('unknown mode ' + mode);
