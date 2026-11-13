@@ -1,9 +1,17 @@
 name: daily-post
+# The exact clock is a scheduled task that dispatches this workflow at 12:00 / 17:00 / 18:00 Tehran.
+# The cron lines are only a fallback; GitHub often runs them hours late, so pipeline.js ignores
+# any run outside its time window.
 on:
+  workflow_dispatch:
+    inputs:
+      mode: { description: 'ask | preview | publish | ping | register | test', required: true, default: ping }
+      arg: { description: 'extra argument (test number)', required: false, default: '' }
+      force: { description: 'ignore the time window', type: boolean, default: false }
   schedule:
-    - cron: '15 8 * * *'   # ask (12:00 Tehran is 08:30 UTC)
-    - cron: '10 13 * * *'  # preview (17:00 Tehran)
-    - cron: '5 14 * * *'   # publish (18:00 Tehran)
+    - cron: '30 8 * * *'   # ask 12:00 Tehran
+    - cron: '30 13 * * *'  # preview 17:00 Tehran
+    - cron: '30 14 * * *'  # publish 18:00 Tehran
   push:
     paths: ['.run']
 permissions:
@@ -12,27 +20,27 @@ concurrency: daily-post
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 340
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+      - name: choose mode
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then M="${{ inputs.mode }}"; A="${{ inputs.arg }}"; F="${{ inputs.force && '1' || '' }}"
+          elif [ "${{ github.event_name }}" = "push" ]; then read M A < <(tr '\n' ' ' < .run); F=1
+          else case "${{ github.event.schedule }}" in
+              "30 8 * * *") M=ask;; "30 13 * * *") M=preview;; "30 14 * * *") M=publish;; esac; F=""; fi
+          echo "MODE=$M" >> $GITHUB_ENV; echo "ARG=$A" >> $GITHUB_ENV; echo "FORCE=$F" >> $GITHUB_ENV; echo "mode=$M arg=$A force=$F"
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
-      - run: npm i --no-save playwright@1.48.2 sharp@0.34.5 && (timeout 240 npx playwright install --with-deps chromium || npx playwright install chromium)
-      - name: choose mode and wait
-        run: |
-          if [ "${{ github.event_name }}" = "push" ]; then M=$(tr -d " \n" < .run); else
-            case "${{ github.event.schedule }}" in
-              "15 8 * * *") M=ask; W=08:30;;
-              "10 13 * * *") M=preview; W=13:30;;
-              "5 14 * * *") M=publish; W=14:30;;
-            esac
-            T=$(date -u -d "$W" +%s); N=$(date -u +%s); [ $T -gt $N ] && sleep $((T-N))
-          fi
-          echo "MODE=$M" >> $GITHUB_ENV
-      - run: node pipeline.js "$MODE" 2>&1 | tee last-run.log; test ${PIPESTATUS[0]} -eq 0
+      - run: npm i --no-save sharp@0.34.5 playwright@1.48.2
+      - if: contains(fromJSON('["preview","publish","test"]'), env.MODE)
+        run: timeout 300 npx playwright install --with-deps chromium || npx playwright install chromium
+      - run: node pipeline.js "$MODE" $ARG 2>&1 | tee last-run.log; test ${PIPESTATUS[0]} -eq 0
         shell: bash
         env: { RUBIKA_TOKEN: "${{ secrets.RUBIKA_TOKEN }}", TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}" }
       - if: always()
         run: |
           git config user.name remota-bot; git config user.email bot@users.noreply.github.com
-          git add state.json last-run.log; git diff --cached --quiet || (git commit -m "state $(date -u +%F-%H%M)" && git push)
+          git add state.json last-run.log; git diff --cached --quiet && exit 0
+          git commit -m "state $(date -u +%F-%H%M) $MODE"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done
