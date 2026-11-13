@@ -1,6 +1,6 @@
-mode rbfwd tehran 2026-11-13T16:30 index 2 force false
+mode rbfwd tehran 2026-11-13T16:39 index 2 force false
 TG getUpdates 200 {"ok":true,"result":[]}
 ERR Error: unknown mode rbfwd
     at /home/runner/work/amir-original-media/amir-original-media/pipeline.js:275:9
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-TG sendMessage 200 {"ok":true,"result":{"message_id":42,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
+TG sendMessage 200 {"ok":true,"result":{"message_id":44,"from":{"id":9133007656,"is_bot":true,"first_name":"\u0627\u0648\u0631\u062c\u06cc\u0646\u0627\u0644 \u06cc\u062f\u06a9\u06
