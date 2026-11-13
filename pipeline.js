@@ -81,10 +81,20 @@ async function pull() {
       const who = chat === S.amir_tg ? 'amir' : chat === S.owner_tg ? 'owner' : 'other';
       S.inbox.push({ who, text, t: m.date });
       if (who === 'owner') await ownerCommand(text);
+      if (who === 'amir') await amirMessage(text);
     }
     save();
   }
   const cut = nowMs() / 1000 - 3 * 86400; S.inbox = S.inbox.filter(x => x.t > cut).slice(-80); save();
+}
+async function amirMessage(text) {
+  const c = S.cycle;
+  if (!c || c.day !== today() || !c.item || c.published || !nameOk(text)) return;
+  const name = cleanName(text);
+  if (c.previewed || c.override) return owner('📩 آقای شوندی بعد از پیش‌نمایش نوشت: «' + name + '»\nاگر باید همین منتشر شود بنویس: نام: ' + name);
+  await tgText(S.amir_tg, '✅ ممنون، ثبت شد: ' + name + (c.urgent ? '\nهمین الان توی کانال روبیکا منتشر می‌شه.' : `\nساعت ${T('publish')} توی کانال روبیکا منتشر می‌شه.`));
+  const pre = SCHED.preview[0] + SCHED.preview[1] / 60;
+  await owner('📩 آقای شوندی نام قطعه را فرستاد: ' + name + (c.urgent ? '' : hour() < pre ? `\nپیش‌نمایش ساعت ${T('preview')} برایت می‌آید.` : `\nساعت ${T('publish')} اول پیش‌نمایش می‌آید و بعد منتشر می‌شود.`));
 }
 async function ownerCommand(text) {
   const c = S.cycle;
@@ -96,6 +106,13 @@ async function ownerCommand(text) {
     if (c && c.day === today() && !c.published && nameOk(name)) { c.override = name; save(); await owner('✅ نام قطعه‌ی امروز ثبت شد: ' + name) }
     else await owner('نام ثبت نشد (یا امروز پستی در صف نیست، یا نام کوتاه/بلند است).');
   } else if (/^وضعیت/.test(text)) await owner(status());
+  else if (/^الان/.test(text)) { // ask now and publish as soon as the name arrives
+    if (c && c.day === today() && c.published) return owner('پست امروز قبلاً منتشر شده. برای فرستادن دوباره بنویس: دوباره');
+    S.urgentReq = true; save(); await owner('⏱ باشه، همین الان از آقای شوندی می‌پرسم و به محض جواب منتشر می‌کنم.');
+  } else if (/^دوباره/.test(text)) {
+    if (c && c.day === today() && c.published) { c.repost = true; save(); await owner('🔁 باشه، پست امروز دوباره در گروه فرستاده می‌شود.') }
+    else await owner('امروز هنوز پستی منتشر نشده که دوباره فرستاده شود.');
+  } else if (/^(راهنما|\/help)/.test(text)) await owner('دستورها:\nوضعیت — وضعیت امروز\nتوقف — پست امروز منتشر نشود\nنام: ... — ثبت نام قطعه\nالان — همین الان بپرس و با جواب منتشر کن\nدوباره — پست امروز را دوباره در گروه بفرست');
 }
 function status() {
   const c = S.cycle, it = Q[S.index];
@@ -161,13 +178,15 @@ async function render(p, name, out) {
 const itemOf = c => Q.find(q => q.id === c.item);
 
 // ---------- steps ----------
-async function ask() {
+async function ask(urgent) {
   if (S.cycle && S.cycle.day === today()) return console.log('already asked today');
   const it = Q[S.index];
   if (!it) { S.cycle = { day: today(), skip: true }; save(); return owner('⚠️ صف پست‌ها تمام شده؛ عکس قطعه‌های جدید لازم است.') }
-  S.cycle = { day: today(), item: it.id, asked_t: Math.floor(nowMs() / 1000) - 60 };
-  if (!S.amir_tg) { S.cycle.skip = true; save(); return owner('⚠️ آقای شوندی هنوز در ربات ثبت نشده؛ امروز پستی منتشر نمی‌شود.') }
-  await tgPhoto(S.amir_tg, await askPhoto(it), askCaption()); save();
+  const cyc = { day: today(), item: it.id, asked_t: Math.floor(nowMs() / 1000) - 60, urgent: !!urgent };
+  if (!S.amir_tg) { S.cycle = { ...cyc, skip: true }; save(); return owner('⚠️ آقای شوندی هنوز در ربات ثبت نشده؛ امروز پستی منتشر نمی‌شود.') }
+  await tgPhoto(S.amir_tg, await askPhoto(it), urgent ? 'سلام آقای شوندی 🌹\nنام دقیق این قطعه چیه؟ همین که بنویسید، توی کانال روبیکا منتشر می‌شه.' : askCaption());
+  S.cycle = cyc; save(); // only after the question really went out
+  if (urgent) return owner(`📨 همین الان نام قطعه (${it.type}، ${it.brand}) از آقای شوندی پرسیده شد. به محض جواب منتشر می‌شود.`);
   await owner(`📨 نام قطعه‌ی امروز از آقای شوندی پرسیده شد (${it.type}، ${it.brand}).\nساعت ${T('preview')} پیش‌نمایش برایت می‌آید.\nاگر خودت نام را می‌دانی بنویس: نام: ...`);
 }
 async function sendPreview(c, note) {
@@ -256,6 +275,61 @@ async function now() {
   await tgText(S.amir_tg, '✅ پست «' + name + '» توی کانال روبیکا منتشر شد. ممنون 🌹');
 }
 
+// ---------- always-on runner ----------
+async function postNow(c, label) {
+  const it = itemOf(c), name = cycleName(c);
+  await render(it, name, 'today.jpg');
+  const id = await rubikaPost(cfg.group_chat_id, 'today.jpg', caption(it, name));
+  return { id, name };
+}
+async function tick() {
+  const h = hour(), c = S.cycle, isToday = c && c.day === today();
+  if (S.urgentReq) { // owner wrote «الان»
+    S.urgentReq = false;
+    if (!isToday) { S.cycle = null; await ask(true) }
+    else if (!c.published) { c.urgent = true; c.skip = false; c.stop = false; save(); if (!cycleName(c) && S.amir_tg) await tgPhoto(S.amir_tg, await askPhoto(itemOf(c)), 'سلام آقای شوندی 🌹\nنام دقیق این قطعه چیه؟ همین که بنویسید، توی کانال روبیکا منتشر می‌شه.') }
+    save(); return;
+  }
+  if (isToday && c.urgent && !c.published && !c.stop && cycleName(c)) {
+    const r = await postNow(c); c.name = r.name; c.published = true; c.previewed = true; c.rubika_id = r.id; S.index++; save();
+    await tgPhoto(S.owner_tg, 'today.jpg', '✅ پست در گروه روبیکا منتشر شد — ' + r.name + '\n(اگر در گروه نیست بنویس: دوباره)');
+    if (S.amir_tg) await tgText(S.amir_tg, '✅ پست «' + r.name + '» توی کانال روبیکا منتشر شد. ممنون 🌹'); return;
+  }
+  if (isToday && c.repost && c.published) {
+    c.repost = false; save(); const r = await postNow(c); c.rubika_id = r.id; save();
+    await tgPhoto(S.owner_tg, 'today.jpg', '🔁 پست دوباره در گروه روبیکا فرستاده شد — ' + r.name); return;
+  }
+  if (h >= WINDOW.ask[0] && h < WINDOW.ask[1] && hour() >= SCHED.ask[0] + SCHED.ask[1] / 60 && !isToday) return ask();
+  if (isToday && !c.urgent && h >= SCHED.preview[0] + SCHED.preview[1] / 60 && h < WINDOW.preview[1] && !c.previewed && !c.skip && !c.stop && !c.published) return preview();
+  if (isToday && !c.urgent && h >= SCHED.publish[0] + SCHED.publish[1] / 60 && h < WINDOW.publish[1] && !c.published) return publish();
+}
+let lastSaved = '';
+function persist() {
+  if (!process.env.DAEMON) return;
+  const now = JSON.stringify(S); if (now === lastSaved) return;
+  const { execSync } = require('child_process');
+  try {
+    execSync('git add state.json && (git diff --cached --quiet || git commit -q -m "state ' + new Date().toISOString().slice(0, 16) + '") && git pull -q --rebase --autostash && git push -q', { stdio: 'inherit' });
+    lastSaved = now;
+  } catch (e) { console.log('persist failed', e.message) }
+}
+async function dispatchNext() {
+  const r = await fetch(`https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/actions/workflows/bot.yml/dispatches`, { method: 'POST', headers: { authorization: 'Bearer ' + process.env.GITHUB_TOKEN, accept: 'application/vnd.github+json' }, body: JSON.stringify({ ref: 'main' }) });
+  console.log('dispatch next', r.status);
+}
+async function daemon() {
+  const start = Date.now(), LIFE = (5 * 60 + 40) * 60e3; let next = false, errs = 0, lastErr = 0;
+  lastSaved = JSON.stringify(S);
+  while (Date.now() - start < LIFE) {
+    try { await pull(); await tick(); errs = 0 }
+    catch (e) { errs++; console.error('tick error', clean(e.stack || e)); if (Date.now() - lastErr > 3600e3) { lastErr = Date.now(); try { await owner('❌ خطا: ' + clean(e.message) + '\n(ربات دوباره تلاش می‌کند)') } catch (_) { } } }
+    persist();
+    if (!next && Date.now() - start > LIFE - 8 * 60e3) { next = true; try { await dispatchNext() } catch (e) { console.log('dispatch failed', e.message) } }
+    await sleep(15000);
+  }
+  persist();
+}
+
 // ---------- main ----------
 (async () => {
   const mode = process.argv[2];
@@ -263,9 +337,11 @@ async function now() {
   if (mode === 'render') return render(Q.find(q => q.id === process.argv[3]), process.argv[4], process.argv[5]);
   if (!TT) throw new Error('TELEGRAM_TOKEN missing');
   if (WINDOW[mode] && !FORCE) { const h = hour(); if (h < WINDOW[mode][0] || h >= WINDOW[mode][1]) return console.log('outside window, skip', mode, h.toFixed(2)) }
-  await pull();
+  if (['daemon', 'tick', 'ask', 'preview', 'publish', 'register', 'ping', 'now'].includes(mode)) await pull(); // only the bot reads Telegram, so no message is consumed twice
   if (mode === 'register') return console.log('amir', !!S.amir_tg, 'owner', !!S.owner_tg);
   if (mode === 'ping') return owner('⏰ زمان‌بند کار می‌کند.\n' + status());
+  if (mode === 'daemon') return daemon();
+  if (mode === 'tick') return tick();
   if (mode === 'ask') return ask();
   if (mode === 'preview') return preview();
   if (mode === 'publish') return publish();

@@ -1,22 +1,17 @@
 name: daily-post
-# The exact clock is a scheduled task that dispatches this workflow at 03:30 / 08:30 / 09:30 New York time.
-# The cron lines are only a fallback; GitHub often runs them hours late, so pipeline.js ignores
-# any run outside its time window.
+# Manual tools only (test, diag, render checks). The daily work is done by bot.yml.
+# This workflow does not commit state.json, so it never fights with the running bot.
 on:
   workflow_dispatch:
     inputs:
       mode: { description: 'ask | preview | publish | ping | register | test', required: true, default: ping }
       arg: { description: 'extra argument (test number)', required: false, default: '' }
       force: { description: 'ignore the time window', type: boolean, default: false }
-  schedule:
-    - cron: '30 8 * * *'   # ask 12:00 Tehran
-    - cron: '30 13 * * *'  # preview 17:00 Tehran
-    - cron: '30 14 * * *'  # publish 18:00 Tehran
   push:
     paths: ['.run']
 permissions:
   contents: write
-concurrency: daily-post
+concurrency: manual-tools
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -46,7 +41,7 @@ jobs:
       - if: always()
         run: |
           git config user.name remota-bot; git config user.email bot@users.noreply.github.com
-          git checkout -- template/posts.js 2>/dev/null || true
-          git add state.json last-run.log; git diff --cached --quiet && exit 0
+          git checkout -- template/posts.js state.json 2>/dev/null || true
+          git add last-run.log; git diff --cached --quiet && exit 0
           git commit -m "state $(date -u +%F-%H%M) $MODE"
           for i in 1 2 3; do git pull --rebase --autostash -q && git push -q && break; sleep 5; done

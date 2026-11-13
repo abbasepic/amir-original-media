@@ -1,0 +1,38 @@
+name: bot
+# Always-on bot: one run lives ~5h40m, checks Telegram every 15 s and does the daily
+# schedule on time (ask 03:30, preview 08:30, publish 09:30 New York). Before it ends it
+# starts the next run; the cron line and the scheduled tasks are only a watchdog.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '7 */2 * * *'
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: bot
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm i --no-save sharp@0.34.5 playwright@1.48.2
+      - run: timeout 300 npx playwright install --with-deps chromium || npx playwright install chromium
+      - run: git config user.name remota-bot && git config user.email bot@users.noreply.github.com
+      - name: bot
+        run: node pipeline.js daemon
+        env:
+          DAEMON: '1'
+          RUBIKA_TOKEN: ${{ secrets.RUBIKA_TOKEN }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - if: failure()
+        env: { TELEGRAM_TOKEN: "${{ secrets.TELEGRAM_TOKEN }}", GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: |
+          C=$(node -e "console.log(require('./state.json').owner_tg||'')")
+          [ -n "$C" ] && curl -s -o /dev/null --retry 3 "https://api.telegram.org/bot$TELEGRAM_TOKEN/sendMessage" --data-urlencode "chat_id=$C" --data-urlencode "text=❌ ربات روی سرور متوقف شد و دوباره راه‌اندازی می‌شود. گزارش: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -s -X POST -H "authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/${{ github.repository }}/actions/workflows/bot.yml/dispatches" -d '{"ref":"main"}'

@@ -1,21 +1,15 @@
 {
- "index": 2,
+ "index": 1,
  "tg_offset": 214425435,
  "amir_tg": 6138743231,
  "owner_tg": 1299733783,
  "cycle": {
   "day": "2026-11-13",
   "item": "26",
-  "asked_t": 1794570458,
-  "published": true,
-  "previewed": true,
-  "name": "(منتشرشده با اجرای فوری)",
-  "rubika_id": "1970631980610605872"
+  "asked_t": 1794586133,
+  "urgent": true
  },
  "inbox": [],
  "rb_test_chat": "b0KdQVB0BQpi021f7898f5e4250c2648",
- "diag": {
-  "text": "1970791062793605872",
-  "image": "1970791062823605872"
- }
+ "urgentReq": false
 }
