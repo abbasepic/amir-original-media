@@ -160,7 +160,7 @@ async function rubikaTestChat() {
 
 // ---------- content ----------
 const askCaption = () => `سلام آقای شوندی 🌹\nنام دقیق این قطعه چیه؟ لطفاً فقط نام کامل رو بنویسید تا ساعت ${T('publish')} توی کانال روبیکا بره.`;
-const caption = (p, name) => `همکار عزیز، ${name} با دو سال ضمانت موجوده. قفسه‌ت رو پر کن. 👇\n\n${name} از برند ${p.brand}\n✅ موجود برای سفارش عمده\n✅ دو سال ضمانت\n✅ تأمین و ارسال سریع\n\nقطعه‌ای که ضمانتش معلومه، راحت‌تر فروش می‌ره و کمتر برگشت می‌خوره.\n\n📞 برای قیمت عمده و ثبت سفارش، همین الان تماس بگیر:\n09122525516\n\n📍 قم، خیابان کشاورز شمالی، نبش ۳۶\nفروش فقط به‌صورت عمده\n\n#پخش_عمده #لوازم_یدکی #قطعات_یدکی #${p.brand.replace(/[ .]/g, '_')} #قم`;
+const caption = (p, name) => `همکار عزیز، ${name} با ${p.ws || 'دو سال ضمانت'} موجوده. قفسه‌ت رو پر کن. 👇\n\n${name} از برند ${p.brand}\n✅ موجود برای سفارش عمده\n✅ ${p.wl || 'دو سال ضمانت'}\n${p.wx ? '✅ ' + p.wx + '\n' : ''}✅ تأمین و ارسال سریع\n\nقطعه‌ای که ضمانتش معلومه، راحت‌تر فروش می‌ره و کمتر برگشت می‌خوره.\n\n📞 برای قیمت عمده و ثبت سفارش، همین الان تماس بگیر:\n09122525516\n\n📍 قم، خیابان کشاورز شمالی، نبش ۳۶\nفروش فقط به‌صورت عمده\n\n#پخش_عمده #لوازم_یدکی #قطعات_یدکی #${p.brand.replace(/[ .]/g, '_')} #قم`;
 async function askPhoto(p) {
   const sharp = require('sharp'); const pic = path.join(fs.mkdtempSync('/tmp/a'), 'q.jpg');
   await sharp(p.img).flatten({ background: '#ffffff' }).resize(900, 900, { fit: 'inside' }).jpeg({ quality: 88 }).toFile(pic); return pic;
@@ -168,7 +168,7 @@ async function askPhoto(p) {
 async function render(p, name, out) {
   if (process.env.FAKE_RENDER) { fs.copyFileSync(process.env.FAKE_RENDER, out); return }
   const { chromium } = require('playwright'); const esc = s => s.replace(/[<>&]/g, '');
-  const post = { id: 'x', img: '../' + p.img, box: p.box ? 'carton.png' : undefined, card: p.card, h: p.h, s: `${p.brand} با <em>دو سال ضمانت</em>`, c: p.c, name: esc(name) };
+  const post = { id: 'x', img: '../' + p.img, box: p.box ? 'carton.png' : undefined, card: p.card, h: p.h, s: `${p.brand} با <em>${p.ws || 'دو سال ضمانت'}</em>`, c: p.c, name: esc(name) };
   fs.writeFileSync('template/posts.js', 'window.POSTS=' + JSON.stringify([post]));
   const b = await chromium.launch(); const pg = await b.newPage({ viewport: { width: 1080, height: 1350 } });
   await pg.goto('file://' + path.resolve('template/post.html')); await pg.evaluate(() => document.fonts.ready); await pg.evaluate(() => show(0));
