@@ -1,5 +1,5 @@
 {
- "index": 2,
+ "index": 3,
  "tg_offset": 214425440,
  "amir_tg": 6138743231,
  "owner_tg": 1299733783,
@@ -9,7 +9,9 @@
   "asked_t": 1794644942,
   "urgent": false,
   "name": "بلبرینگ چرخ عقب پراید",
-  "previewed": true
+  "previewed": true,
+  "published": true,
+  "rubika_id": "1971712521104605872"
  },
  "inbox": [
   {
