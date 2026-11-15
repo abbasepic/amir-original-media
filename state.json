@@ -1,5 +1,5 @@
 {
- "index": 3,
+ "index": 4,
  "tg_offset": 214425441,
  "amir_tg": 6138743231,
  "owner_tg": 1299733783,
@@ -9,7 +9,9 @@
   "asked_t": 1794731352,
   "urgent": false,
   "name": "واشر سرسیلندر پژو ۴۰۵ برند OPG",
-  "previewed": true
+  "previewed": true,
+  "published": true,
+  "rubika_id": "1972704012422605872"
  },
  "inbox": [
   {
