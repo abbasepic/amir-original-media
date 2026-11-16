@@ -1,6 +1,6 @@
 {
- "index": 4,
- "tg_offset": 214425441,
+ "index": 5,
+ "tg_offset": 214425442,
  "amir_tg": 6138743231,
  "owner_tg": 1299733783,
  "cycle": {
@@ -8,7 +8,11 @@
   "item": "16",
   "asked_t": 1794817747,
   "urgent": false,
-  "skip": true
+  "skip": true,
+  "name": "بلبرینگ تایم ثابت TU5",
+  "previewed": true,
+  "published": true,
+  "rubika_id": "1973734512516605872"
  },
  "inbox": [
   {
@@ -35,6 +39,11 @@
    "who": "amir",
    "text": "واشر سرسیلندر پژو ۴۰۵ برند OPG",
    "t": 1794746896
+  },
+  {
+   "who": "amir",
+   "text": "بلبرینگ تایم ثابت TU5",
+   "t": 1794839960
   }
  ],
  "rb_test_chat": "b0KdQVB0BQpi021f7898f5e4250c2648",
