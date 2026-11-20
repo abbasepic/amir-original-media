@@ -1,5 +1,5 @@
 {
- "index": 8,
+ "index": 9,
  "tg_offset": 214425447,
  "amir_tg": 6138743231,
  "owner_tg": 1299733783,
@@ -9,7 +9,9 @@
   "asked_t": 1795163347,
   "urgent": false,
   "name": "بلبرینگ تایم پژو ۴۰۵ برند دروله",
-  "previewed": true
+  "previewed": true,
+  "published": true,
+  "rubika_id": "1977753477008605872"
  },
  "inbox": [
   {
