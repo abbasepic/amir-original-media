@@ -1,5 +1,5 @@
 {
- "index": 9,
+ "index": 10,
  "tg_offset": 214425448,
  "amir_tg": 6138743231,
  "owner_tg": 1299733783,
@@ -8,7 +8,11 @@
   "item": "30",
   "asked_t": 1795249747,
   "urgent": false,
-  "skip": true
+  "skip": true,
+  "name": "لوله فرعی آب پراید و تیبا برند ایتوک",
+  "previewed": true,
+  "published": true,
+  "rubika_id": "1978792003801605872"
  },
  "inbox": [
   {
