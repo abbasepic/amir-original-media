@@ -1,5 +1,5 @@
 {
- "index": 11,
+ "index": 12,
  "tg_offset": 214425450,
  "amir_tg": 6138743231,
  "owner_tg": 1299733783,
@@ -9,7 +9,9 @@
   "asked_t": 1795422552,
   "urgent": false,
   "name": "بلبرینگ کلاچ پراید برند دروله",
-  "previewed": true
+  "previewed": true,
+  "published": true,
+  "rubika_id": "1980847033555605872"
  },
  "inbox": [
   {
