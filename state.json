@@ -1,6 +1,6 @@
 {
- "index": 12,
- "tg_offset": 214425450,
+ "index": 13,
+ "tg_offset": 214425452,
  "amir_tg": 6138743231,
  "owner_tg": 1299733783,
  "cycle": {
@@ -8,7 +8,11 @@
   "item": "40",
   "asked_t": 1795508945,
   "urgent": false,
-  "skip": true
+  "skip": true,
+  "name": "کاسه نمد  برند GTS",
+  "previewed": true,
+  "published": true,
+  "rubika_id": "1981979577456605872"
  },
  "inbox": [
   {
@@ -20,6 +24,11 @@
    "who": "amir",
    "text": "بلبرینگ کلاچ پراید برند دروله",
    "t": 1795424332
+  },
+  {
+   "who": "amir",
+   "text": "کاسه نمد  برند GTS",
+   "t": 1795535168
   }
  ],
  "rb_test_chat": "b0KdQVB0BQpi021f7898f5e4250c2648",
