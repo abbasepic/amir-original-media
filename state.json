@@ -1,6 +1,6 @@
 {
- "index": 13,
- "tg_offset": 214425452,
+ "index": 14,
+ "tg_offset": 214425453,
  "amir_tg": 6138743231,
  "owner_tg": 1299733783,
  "cycle": {
@@ -8,7 +8,11 @@
   "item": "41",
   "asked_t": 1795595343,
   "urgent": false,
-  "skip": true
+  "skip": true,
+  "name": "لاستیک ساق سوپاپ پژو ۴۰۵ برند GTS",
+  "previewed": true,
+  "published": true,
+  "rubika_id": "1983010103416605872"
  },
  "inbox": [
   {
@@ -20,6 +24,11 @@
    "who": "amir",
    "text": "کاسه نمد  برند GTS",
    "t": 1795535168
+  },
+  {
+   "who": "amir",
+   "text": "لاستیک ساق سوپاپ پژو ۴۰۵ برند GTS",
+   "t": 1795622594
   }
  ],
  "rb_test_chat": "b0KdQVB0BQpi021f7898f5e4250c2648",
