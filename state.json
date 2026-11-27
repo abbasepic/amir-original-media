@@ -1,6 +1,6 @@
 {
- "index": 15,
- "tg_offset": 214425454,
+ "index": 16,
+ "tg_offset": 214425455,
  "amir_tg": 6138743231,
  "owner_tg": 1299733783,
  "cycle": {
@@ -8,7 +8,11 @@
   "item": "22",
   "asked_t": 1795768147,
   "urgent": false,
-  "skip": true
+  "skip": true,
+  "name": "بلبرینگ تایم ساعتی TU5 برند دروله",
+  "previewed": true,
+  "published": true,
+  "rubika_id": "1985198212145605872"
  },
  "inbox": [
   {
@@ -20,6 +24,11 @@
    "who": "amir",
    "text": "بلبرینگ چرخ جلو پراید برند دروله",
    "t": 1795706929
+  },
+  {
+   "who": "amir",
+   "text": "بلبرینگ تایم ساعتی TU5 برند دروله",
+   "t": 1795798316
   }
  ],
  "rb_test_chat": "b0KdQVB0BQpi021f7898f5e4250c2648",
